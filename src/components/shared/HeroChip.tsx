@@ -1,10 +1,9 @@
 import { useCurrentTheme } from '@/hooks/useCurrentTheme';
 import { Text } from '@/shared/Text';
-import { LucideIcon } from 'lucide-react';
 import React from 'react';
 
 interface HeroChipProps {
-  icon: LucideIcon;
+  icon: React.ElementType;
   label: string;
 }
 

@@ -1,0 +1,14 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Production Build
+dist
+dist-ssr
+
+# Environment Variables (CRITICAL)
+.env
+
+# Local AI / Editor Settings
+.claude/

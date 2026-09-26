@@ -2,8 +2,8 @@ import { useGetCategories } from '@/hooks/categories/useGetCategories';
 import { useCurrentTheme } from '@/hooks/useCurrentTheme';
 import { useIconColors } from '@/hooks/useIconColors';
 import { Category } from '@/interfaces/Category';
-import { TransactionFilters } from '@/interfaces/Transaction';
-import { TransactionType } from '@/interfaces/components/ITransaction';
+import { TransactionFilters, TransactionType } from '@/interfaces/Transaction';
+import { toYMD } from '@/shared/dateRange';
 import { Text } from '@/shared/Text';
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -27,13 +27,6 @@ const defaultValues: FilterValues = {
   dateEnd: null,
   amountMin: '',
   amountMax: '',
-};
-
-const toYMD = (d: Date) => {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
 };
 
 const toApiFilters = (v: FilterValues): TransactionFilters => {
@@ -83,7 +76,7 @@ export default function Filters({ onApply }: FiltersProps = {}) {
     if (
       values.type &&
       selectedCategory &&
-      (selectedCategory.type as unknown as TransactionType) !== values.type
+      selectedCategory.type !== values.type
     ) {
       update('categoryId', null);
     }
@@ -93,7 +86,7 @@ export default function Filters({ onApply }: FiltersProps = {}) {
     const all = (categories as Category[] | undefined) ?? [];
     if (!values.type) return all;
     return all.filter(
-      (c) => (c.type as unknown as TransactionType) === values.type,
+      (c) => c.type === values.type,
     );
   }, [categories, values.type]);
 
@@ -102,7 +95,7 @@ export default function Filters({ onApply }: FiltersProps = {}) {
   const summary = [
     selectedCategory ? selectedCategory.name : 'All categories',
     values.type
-      ? values.type === ('expense' as TransactionType) ? 'Expense' : 'Income'
+      ? values.type === 'expense' ? 'Expense' : 'Income'
       : 'All types',
   ].join(' · ');
 
@@ -135,7 +128,7 @@ export default function Filters({ onApply }: FiltersProps = {}) {
               Type
             </Text>
             <div className="flex flex-row gap-2">
-              {(['expense', 'income'] as TransactionType[]).map((t) => {
+              {(['expense', 'income'] as const).map((t) => {
                 const selected = values.type === t;
                 return (
                   <button

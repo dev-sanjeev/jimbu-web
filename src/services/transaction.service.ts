@@ -8,7 +8,7 @@ import type {
   UpdateTransactionPayload,
 } from '@/interfaces/Transaction';
 
-const normalizeTransaction = (t: Transaction): Transaction => ({
+export const normalizeTransaction = (t: Transaction): Transaction => ({
   ...t,
   amount: typeof t.amount === 'string' ? parseFloat(t.amount as unknown as string) : t.amount,
   type: String(t.type).toLowerCase() as TransactionType,
@@ -19,7 +19,7 @@ const normalize = (raw: PaginatedTransactions): PaginatedTransactions => ({
   data: raw.data.map(normalizeTransaction),
 });
 
-const buildParams = (
+export const buildParams = (
   cursor?: string | null,
   filters?: TransactionFilters,
 ): Record<string, string | number> => {

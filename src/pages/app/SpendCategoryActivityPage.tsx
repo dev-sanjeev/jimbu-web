@@ -1,6 +1,7 @@
 import SectionHeader from '@/components/shared/SectionHeader';
 import TransactionCard from '@/components/shared/TransactionCard';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { resolveLucideIcon } from '@/components/accounts/lucideIcon';
 import { useGetCategories } from '@/hooks/categories/useGetCategories';
 import { useGetTransactionsTimeframe } from '@/hooks/transactions/useGetTransactionsTimeframe';
@@ -58,7 +59,7 @@ export default function SpendCategoryActivityPage() {
 
   return (
     <ScreenWrapper>
-      <div className="flex-1 overflow-y-auto pb-20 pt-3 flex flex-col gap-5">
+      <ScrollArea className="pb-20 pt-3 flex flex-col gap-5">
         <div className="bg-card rounded-lg flex flex-row gap-4 p-4 items-start border border-border shadow-card">
           <div
             className="w-14 h-14 rounded-lg flex items-center justify-center shrink-0"
@@ -117,7 +118,7 @@ export default function SpendCategoryActivityPage() {
             </div>
           )}
         </div>
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

@@ -2,6 +2,7 @@ import AccountItem from '@/components/accounts/AccountItem';
 import Group from '@/components/accounts/Group';
 import HeaderCard from '@/components/accounts/HeaderCard';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { useGetAccounts } from '@/hooks/accounts/useGetAccounts';
 import { Account, AccountType, ACCOUNT_TYPE_LABELS } from '@/interfaces/Account';
 import { Text } from '@/shared/Text';
@@ -39,7 +40,7 @@ export default function AccountsPage() {
         onButtonPress={() => navigate('/main/accounts/new')}
       />
 
-      <div className="flex-1 overflow-y-auto pb-8 pt-4 flex flex-col gap-6">
+      <ScrollArea className="pb-8 pt-4 flex flex-col gap-6">
         {isLoading && (
           <div className="flex items-center justify-center py-10">
             <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
@@ -83,7 +84,7 @@ export default function AccountsPage() {
             })}
           </div>
         )}
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

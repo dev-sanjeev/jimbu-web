@@ -4,13 +4,13 @@ import FormActions from '@/components/shared/FormActions';
 import FormField from '@/components/shared/FormField';
 import IconPicker, { IconOption } from '@/components/shared/IconPicker';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { resolveLucideIcon } from '@/components/accounts/lucideIcon';
 import { useCreateCategory } from '@/hooks/categories/useCreateCategory';
 import { useDeleteCategory } from '@/hooks/categories/useDeleteCategory';
 import { useUpdateCategory } from '@/hooks/categories/useUpdateCategory';
 import { useIconColors } from '@/hooks/useIconColors';
-import { CategoryType } from '@/interfaces/Category';
-import { TransactionType } from '@/interfaces/components/ITransaction';
+import { TransactionType } from '@/interfaces/Transaction';
 import {
   CATEGORY_COLORS,
   DEFAULT_CATEGORY_COLOR,
@@ -19,7 +19,8 @@ import {
 } from '@/shared/categoryPalette';
 import { Text } from '@/shared/Text';
 import { Trash2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react'; // useRef for initialForm
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
@@ -45,19 +46,18 @@ export default function AddCategoryPage() {
   const categoryType = (searchParams.get('type') as TransactionType) ?? TransactionType.EXPENSE;
   const typeColor = categoryType === TransactionType.EXPENSE ? EXPENSE_TYPE_COLOR : INCOME_TYPE_COLOR;
 
-  const [form, setForm] = useState({
-    name: searchParams.get('name') ?? '',
-    icon: searchParams.get('icon') ?? 'tag',
-    color: searchParams.get('color') ?? DEFAULT_CATEGORY_COLOR,
+  const { watch, setValue, formState: { isDirty }, reset } = useForm({
+    defaultValues: {
+      name: searchParams.get('name') ?? '',
+      icon: searchParams.get('icon') ?? 'tag',
+      color: searchParams.get('color') ?? DEFAULT_CATEGORY_COLOR,
+    },
   });
-  const initialForm = useRef(form);
+
+  const form = watch();
+
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [confirmDiscardOpen, setConfirmDiscardOpen] = useState(false);
-
-  const isDirty =
-    form.name !== initialForm.current.name ||
-    form.icon !== initialForm.current.icon ||
-    form.color !== initialForm.current.color;
 
   const handleCancel = () => {
     if (!isDirty) { navigate(-1); return; }
@@ -66,25 +66,25 @@ export default function AddCategoryPage() {
 
   useEffect(() => {
     if (isEditMode) {
-      setForm({
+      reset({
         name: searchParams.get('name') ?? '',
         icon: searchParams.get('icon') ?? 'tag',
         color: searchParams.get('color') ?? DEFAULT_CATEGORY_COLOR,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, isEditMode, searchParams, reset]);
 
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
 
   const handleSave = () => {
-    if (!form.name.trim()) return;
+    const { name, icon, color } = form;
+    if (!name.trim()) return;
 
     if (isEditMode && id) {
       updateCategory.mutate(
-        { id: parseInt(id, 10), payload: { name: form.name.trim(), icon: form.icon, color: form.color } },
+        { id: parseInt(id, 10), payload: { name: name.trim(), icon, color } },
         {
           onSuccess: () => { toast.success('Category updated!'); navigate(-1); },
           onError: () => toast.error('Could not update the category', { description: 'Please try again.' }),
@@ -94,7 +94,7 @@ export default function AddCategoryPage() {
     }
 
     createCategory.mutate(
-      { name: form.name.trim(), type: categoryType as unknown as CategoryType, icon: form.icon, color: form.color },
+      { name: name.trim(), type: categoryType, icon, color },
       {
         onSuccess: () => { toast.success('Category added!'); navigate(-1); },
         onError: () => toast.error('Could not create the category', { description: 'Please try again.' }),
@@ -138,7 +138,7 @@ export default function AddCategoryPage() {
         onCancel={() => setConfirmDiscardOpen(false)}
       />
       <AddScreenHeader title={headerTitle} onBack={handleCancel} />
-      <div className="flex-1 overflow-y-auto pb-20 pt-2 flex flex-col gap-6">
+      <ScrollArea className="pb-20 pt-2 flex flex-col gap-6">
         {/* Preview */}
         <div>
           <Text variant="caption" className="font-semibold text-foreground uppercase tracking-wider mb-2 pl-1">Preview</Text>
@@ -163,7 +163,7 @@ export default function AddCategoryPage() {
         <FormField
           label="Category Name"
           value={form.name}
-          onChangeText={(v) => setForm((prev) => ({ ...prev, name: v }))}
+          onChangeText={(v) => setValue('name', v, { shouldDirty: true })}
           placeholder="Enter category name"
           icon={(() => {
             const FieldIcon = resolveLucideIcon(form.icon);
@@ -175,14 +175,14 @@ export default function AddCategoryPage() {
           label="Color"
           colors={[...CATEGORY_COLORS]}
           value={form.color}
-          onChange={(color) => setForm((prev) => ({ ...prev, color }))}
+          onChange={(color) => setValue('color', color, { shouldDirty: true })}
         />
 
         <IconPicker
           label="Icon"
           icons={ICONS}
           value={form.icon}
-          onChange={(iconId) => setForm((prev) => ({ ...prev, icon: iconId }))}
+          onChange={(iconId) => setValue('icon', iconId, { shouldDirty: true })}
         />
 
         <FormActions
@@ -204,7 +204,7 @@ export default function AddCategoryPage() {
             <Text variant="body" className="font-semibold text-destructive">Delete Category</Text>
           </button>
         )}
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

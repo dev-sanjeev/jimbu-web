@@ -12,3 +12,6 @@ dist-ssr
 
 # Local AI / Editor Settings
 .claude/
+
+# tsc output (no outDir set — tsc emits .js next to source if run directly)
+src/**/*.js

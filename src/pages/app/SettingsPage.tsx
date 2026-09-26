@@ -1,6 +1,7 @@
 import FormActions from '@/components/shared/FormActions';
 import FormField from '@/components/shared/FormField';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { useUpdateProfile } from '@/hooks/user/useUpdateProfile';
 import { UpdateProfilePayload } from '@/services/user.service';
 import { useAuthStore } from '@/stores/authStore';
@@ -83,7 +84,7 @@ export default function SettingsPage() {
         onConfirm={executeSave}
         onCancel={() => { setConfirmSaveOpen(false); setPendingPayload(null); }}
       />
-      <div className="flex-1 overflow-y-auto pb-8 flex flex-col gap-5">
+      <ScrollArea className="pb-8 flex flex-col gap-5">
         <FormField
           label="Email"
           value={user?.username ?? ''}
@@ -154,7 +155,7 @@ export default function SettingsPage() {
             disabled={!isDirty}
           />
         </div>
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

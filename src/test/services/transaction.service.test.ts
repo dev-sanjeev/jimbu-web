@@ -48,6 +48,31 @@ describe('normalizeTransaction', () => {
   it('preserves accountId as a number', () => {
     expect(normalizeTransaction(baseTransaction).accountId).toBe(10);
   });
+
+  it('returns NaN for null amount', () => {
+    const t = { ...baseTransaction, amount: null as unknown as number };
+    expect(isNaN(normalizeTransaction(t).amount)).toBe(true);
+  });
+
+  it('returns NaN for undefined amount', () => {
+    const t = { ...baseTransaction, amount: undefined as unknown as number };
+    expect(isNaN(normalizeTransaction(t).amount)).toBe(true);
+  });
+
+  it('returns NaN for empty string amount', () => {
+    const t = { ...baseTransaction, amount: '' as unknown as number };
+    expect(isNaN(normalizeTransaction(t).amount)).toBe(true);
+  });
+
+  it('returns NaN for non-numeric string amount', () => {
+    const t = { ...baseTransaction, amount: 'abc' as unknown as number };
+    expect(isNaN(normalizeTransaction(t).amount)).toBe(true);
+  });
+
+  it('does not produce "undefined" string for missing type', () => {
+    const t = { ...baseTransaction, type: undefined as unknown as TransactionType };
+    expect(normalizeTransaction(t).type).not.toBe('undefined');
+  });
 });
 
 describe('buildParams', () => {

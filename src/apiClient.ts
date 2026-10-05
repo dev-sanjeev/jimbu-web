@@ -104,8 +104,11 @@ export function createApiClient(deps: ApiClientDeps): AxiosInstance {
             // No body needed — browser sends the refresh_token cookie automatically
             await client.post('/auth/refresh', {}, { skipDeviceHeaders: false });
             return client(originalRequest);
-          } catch {
-            onAuthFailure?.();
+          } catch (refreshError) {
+            const statusCode = (refreshError as Error & { statusCode?: number }).statusCode;
+            if (statusCode !== 401) {
+              onAuthFailure?.();
+            }
           }
         } else {
           onAuthFailure?.();

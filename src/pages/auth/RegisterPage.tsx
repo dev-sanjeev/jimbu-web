@@ -166,21 +166,19 @@ export default function RegisterPage() {
         </div>
         <Text variant="bodySm" className="flex-1 text-muted-foreground" style={{ lineHeight: '20px' }}>
           I agree to the{' '}
-          <Text
-            variant="bodySm"
-            className="font-semibold text-accent cursor-pointer"
+          <span
+            className="text-body-sm font-semibold text-accent cursor-pointer"
             onClick={(e) => { e.stopPropagation(); setTermsVisible(true); }}
           >
             Terms &amp; Conditions
-          </Text>{' '}
+          </span>{' '}
           and{' '}
-          <Text
-            variant="bodySm"
-            className="font-semibold text-accent cursor-pointer"
+          <span
+            className="text-body-sm font-semibold text-accent cursor-pointer"
             onClick={(e) => { e.stopPropagation(); setPrivacyVisible(true); }}
           >
             Privacy Policy
-          </Text>
+          </span>
         </Text>
       </div>
 

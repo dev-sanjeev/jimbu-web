@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { normalizeTransaction, buildParams } from '@/services/transaction.service';
-import type { Transaction } from '@/interfaces/Transaction';
+import type { Transaction, TransactionType } from '@/interfaces/Transaction';
 
 const baseTransaction: Transaction = {
   id: 1,

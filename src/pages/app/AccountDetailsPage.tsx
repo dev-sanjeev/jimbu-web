@@ -3,6 +3,7 @@ import AddScreenHeader from "@/components/shared/AddScreenHeader";
 import HeroChip from "@/components/shared/HeroChip";
 import SectionHeader from "@/components/shared/SectionHeader";
 import ScreenWrapper from "@/components/shared/ScreenWrapper";
+import ScrollArea from "@/components/shared/ScrollArea";
 import { resolveLucideIcon } from "@/components/accounts/lucideIcon";
 import { useDeleteAccount } from "@/hooks/accounts/useDeleteAccount";
 import { useGetAccounts } from "@/hooks/accounts/useGetAccounts";
@@ -113,7 +114,7 @@ export default function AccountDetailsPage() {
         onCancel={() => setConfirmDeleteOpen(false)}
       />
       <AddScreenHeader title={account.name} />
-      <div className="flex-1 overflow-y-auto pb-20 pt-3 flex flex-col gap-5">
+      <ScrollArea className="pb-20 pt-3 flex flex-col gap-5">
         {/* Hero gradient card */}
         <div
           className="rounded-lg p-6"
@@ -240,7 +241,7 @@ export default function AccountDetailsPage() {
             <InfoRow label="Currency" value="AUD ($)" />
           </div>
         </div>
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

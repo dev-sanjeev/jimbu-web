@@ -3,6 +3,7 @@ import EmptyMonthCategoriesState from '@/components/shared/EmptyMonthCategoriesS
 import MonthTotalCard from '@/components/shared/MonthTotalCard';
 import SectionHeader from '@/components/shared/SectionHeader';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { useGetTransactionsTimeframe } from '@/hooks/transactions/useGetTransactionsTimeframe';
 import { useIconColors } from '@/hooks/useIconColors';
 import { firstOfMonth, monthBoundsISO, monthLabel, monthParam } from '@/shared/dateRange';
@@ -46,7 +47,7 @@ export default function SpendCategoriesPage() {
 
   return (
     <ScreenWrapper>
-      <div className="flex-1 overflow-y-auto pb-20 pt-3 flex flex-col gap-5">
+      <ScrollArea className="pb-20 pt-3 flex flex-col gap-5">
         <div className="flex flex-row items-center justify-between">
           <button
             type="button"
@@ -108,7 +109,7 @@ export default function SpendCategoriesPage() {
             </div>
           )}
         </div>
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

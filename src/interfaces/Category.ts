@@ -1,16 +1,16 @@
-export type CategoryType = 'expense' | 'income';
+import { TransactionType } from '@/interfaces/Transaction';
 
 export interface Category {
   id: number;
   name: string;
-  type: CategoryType;
+  type: TransactionType;
   icon: string;
   color: string;
 }
 
 export interface CreateCategoryPayload {
   name: string;
-  type: CategoryType;
+  type: TransactionType;
   icon: string;
   color: string;
 }

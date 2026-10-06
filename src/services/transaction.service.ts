@@ -8,18 +8,29 @@ import type {
   UpdateTransactionPayload,
 } from '@/interfaces/Transaction';
 
-const normalizeTransaction = (t: Transaction): Transaction => ({
-  ...t,
-  amount: typeof t.amount === 'string' ? parseFloat(t.amount as unknown as string) : t.amount,
-  type: String(t.type).toLowerCase() as TransactionType,
-});
+export const normalizeTransaction = (t: Transaction): Transaction => {
+  const raw = t.amount as unknown;
+  let amount: number;
+  if (typeof raw === 'number') {
+    amount = raw;
+  } else if (typeof raw === 'string') {
+    amount = parseFloat(raw);
+  } else {
+    amount = NaN;
+  }
+  return {
+    ...t,
+    amount,
+    type: t.type != null ? (String(t.type).toLowerCase() as TransactionType) : t.type,
+  };
+};
 
 const normalize = (raw: PaginatedTransactions): PaginatedTransactions => ({
   ...raw,
   data: raw.data.map(normalizeTransaction),
 });
 
-const buildParams = (
+export const buildParams = (
   cursor?: string | null,
   filters?: TransactionFilters,
 ): Record<string, string | number> => {

@@ -1,6 +1,7 @@
 import AddScreenHeader from '@/components/shared/AddScreenHeader';
 import SectionHeader from '@/components/shared/SectionHeader';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { resolveLucideIcon } from '@/components/accounts/lucideIcon';
 import { useGetAccounts } from '@/hooks/accounts/useGetAccounts';
 import { useDeleteTransaction } from '@/hooks/transactions/useDeleteTransaction';
@@ -126,7 +127,7 @@ export default function TransactionDetailsPage() {
         onCancel={() => setConfirmDeleteOpen(false)}
       />
       <AddScreenHeader title="Transaction" />
-      <div className="flex-1 overflow-y-auto pb-24 pt-3 flex flex-col gap-5">
+      <ScrollArea className="pb-24 pt-3 flex flex-col gap-5">
         {/* Hero card */}
         <div
           className="relative rounded-2xl p-6 flex flex-col items-center"
@@ -200,7 +201,7 @@ export default function TransactionDetailsPage() {
             )}
           </div>
         </div>
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

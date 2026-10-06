@@ -23,13 +23,17 @@ export interface AuthResponse {
   };
 }
 
+export interface LoginResponse {
+  success: boolean;
+}
+
 export const registerUser = async (payload: RegisterPayload): Promise<AuthResponse> => {
   const { data } = await apiClient.post<AuthResponse>('/auth/register', payload);
   return data;
 };
 
-export const loginUser = async (payload: LoginPayload): Promise<AuthResponse> => {
-  const { data } = await apiClient.post<AuthResponse>('/auth/login', payload);
+export const loginUser = async (payload: LoginPayload): Promise<LoginResponse> => {
+  const { data } = await apiClient.post<LoginResponse>('/auth/login', payload);
   return data;
 };
 

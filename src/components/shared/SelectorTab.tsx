@@ -1,4 +1,4 @@
-import { TransactionType } from '@/interfaces/components/ITransaction';
+import { TransactionType } from '@/interfaces/Transaction';
 import { useState } from 'react';
 import Selector from './Selector';
 

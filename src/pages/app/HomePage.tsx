@@ -7,11 +7,13 @@ import MonthSpendAreaChart from '@/components/shared/MonthSpendAreaChart';
 import MonthTotalCard from '@/components/shared/MonthTotalCard';
 import SectionHeader from '@/components/shared/SectionHeader';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import TransactionCard from '@/components/shared/TransactionCard';
 import { useGetTransactions } from '@/hooks/transactions/useGetTransactions';
 import { useGetTransactionsTimeframe } from '@/hooks/transactions/useGetTransactionsTimeframe';
 import { Transaction } from '@/interfaces/Transaction';
 import { firstOfMonth, monthBoundsISO } from '@/shared/dateRange';
+import { buildTopCategories } from '@/shared/transactions';
 import { Text } from '@/shared/Text';
 import { useAuthStore } from '@/stores/authStore';
 import { Plus, Wallet } from 'lucide-react';
@@ -37,21 +39,8 @@ export default function HomePage() {
   const monthTransactions = useMemo(() => timeframeData?.data ?? [], [timeframeData]);
 
   const { monthTotal, topCategories } = useMemo(() => {
-    const expenses = monthTransactions.filter((t) => t.type === 'expense');
-    const total = expenses.reduce((sum, t) => sum + Number(t.amount), 0);
-
-    const byCategory = new Map<number, { categoryId: number; name: string; icon: string; color: string; amount: number }>();
-    for (const tx of expenses) {
-      const existing = byCategory.get(tx.categoryId);
-      const amount = Number(tx.amount);
-      if (existing) existing.amount += amount;
-      else byCategory.set(tx.categoryId, { categoryId: tx.categoryId, name: tx.categoryName, icon: tx.categoryIcon, color: tx.categoryColor, amount });
-    }
-
-    return {
-      monthTotal: total,
-      topCategories: Array.from(byCategory.values()).sort((a, b) => b.amount - a.amount).slice(0, 3),
-    };
+    const { total, categories } = buildTopCategories(monthTransactions);
+    return { monthTotal: total, topCategories: categories };
   }, [monthTransactions]);
 
   const {
@@ -86,7 +75,7 @@ export default function HomePage() {
 
   return (
     <ScreenWrapper>
-      <div className="flex-1 overflow-y-auto pb-24 relative">
+      <ScrollArea className="pb-24 relative">
         <HeroCard title={`${user?.firstName},`} subtitle="Here is a simple overview of your everyday finances and your family budget for this month.">
           <HeroChip icon={Wallet} label="Welcome back" />
         </HeroCard>
@@ -148,7 +137,7 @@ export default function HomePage() {
             </div>
           )}
         </div>
-      </div>
+      </ScrollArea>
 
       {/* Floating action button */}
       <button

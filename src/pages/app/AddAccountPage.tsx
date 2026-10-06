@@ -6,6 +6,7 @@ import FormField from "@/components/shared/FormField";
 import IconPicker, { IconOption } from "@/components/shared/IconPicker";
 import PillGroup, { PillOption } from "@/components/shared/PillGroup";
 import ScreenWrapper from "@/components/shared/ScreenWrapper";
+import ScrollArea from "@/components/shared/ScrollArea";
 import { useCreateAccount } from "@/hooks/accounts/useCreateAccount";
 import { useGetAccounts } from "@/hooks/accounts/useGetAccounts";
 import { useUpdateAccount } from "@/hooks/accounts/useUpdateAccount";
@@ -180,7 +181,7 @@ export default function AddAccountPage() {
         onCancel={() => setConfirmDiscardOpen(false)}
       />
       <AddScreenHeader title={headerTitle} onBack={handleCancel} />
-      <div className="flex-1 overflow-y-auto pb-20 pt-2 flex flex-col gap-6">
+      <ScrollArea className="pb-20 pt-2 flex flex-col gap-6">
         <AccountPreviewCard
           name={watched.name ?? ""}
           typeLabel={ACCOUNT_TYPE_LABELS[watched.type ?? "bank"]}
@@ -269,7 +270,7 @@ export default function AddAccountPage() {
           saveLabel={saveLabel}
           isSaving={isSaving}
         />
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

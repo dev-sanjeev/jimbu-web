@@ -43,6 +43,14 @@ export const parseMonthParam = (raw: string | undefined): Date => {
   return firstOfMonth(new Date());
 };
 
+/** Formats a Date to a `YYYY-MM-DD` string in local time. Suitable for date inputs and API filter params. */
+export const toYMD = (d: Date): string => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+
 export const dayLabel = (date: Date) => {
   if (isNaN(date.getTime())) return "Unknown Date";
   const today = new Date();

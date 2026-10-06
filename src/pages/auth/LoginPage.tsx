@@ -41,7 +41,7 @@ const features = [
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const setToken = useAuthStore((state) => state.setToken);
+  const hydrate = useAuthStore((state) => state.hydrate);
   const icon = useIconColors();
   const { width: screenWidth } = useWindowSize();
   const isWide = screenWidth >= WEB_SIDEBAR_BREAKPOINT;
@@ -70,8 +70,8 @@ export default function LoginPage() {
 
   const onSubmit = async (values: LoginForm) => {
     try {
-      const data = await loginUser(values);
-      await setToken(data.accessToken, data.refreshToken);
+      await loginUser(values);
+      await hydrate();
       navigate("/main");
     } catch (e) {
       const message =

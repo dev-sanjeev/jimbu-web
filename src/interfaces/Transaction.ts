@@ -1,4 +1,9 @@
-export type TransactionType = "income" | "expense";
+export const TransactionType = {
+  INCOME: "income",
+  EXPENSE: "expense",
+} as const;
+
+export type TransactionType = typeof TransactionType[keyof typeof TransactionType];
 
 export interface CreateTransactionPayload {
   categoryId: number;
@@ -17,7 +22,8 @@ export interface Transaction {
   id: number;
   type: TransactionType;
   amount: number;
-  notes: string;
+  notes: string | null;
+  accountId: number;
   categoryId: number;
   categoryName: string;
   categoryIcon: string;

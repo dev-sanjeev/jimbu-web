@@ -1,24 +1,17 @@
 import Filters from '@/components/shared/Filters';
 import TransactionCard from '@/components/shared/TransactionCard';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { useGetAccounts } from '@/hooks/accounts/useGetAccounts';
 import { useGetTransactions } from '@/hooks/transactions/useGetTransactions';
 import { useIconColors } from '@/hooks/useIconColors';
 import { Account } from '@/interfaces/Account';
 import { Transaction, TransactionFilters } from '@/interfaces/Transaction';
+import { groupTransactionsByDay } from '@/shared/transactions';
 import { Text } from '@/shared/Text';
 import { List, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-function formatLabel(date: Date): string {
-  const today = new Date();
-  const yesterday = new Date(Date.now() - 86400000);
-  if (isNaN(date.getTime())) return 'Unknown Date';
-  if (date.toDateString() === today.toDateString()) return 'Today';
-  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
-  return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-}
 
 export default function TransactionsPage() {
   const navigate = useNavigate();
@@ -39,15 +32,7 @@ export default function TransactionsPage() {
 
   const transactions = useMemo<Transaction[]>(() => data?.pages.flatMap((p) => p.data) ?? [], [data]);
 
-  const sections = useMemo(() => {
-    const grouped = transactions.reduce<Record<string, Transaction[]>>((acc, tx) => {
-      const label = formatLabel(new Date(tx.createdAt));
-      if (!acc[label]) acc[label] = [];
-      acc[label].push(tx);
-      return acc;
-    }, {});
-    return Object.entries(grouped).map(([title, data]) => ({ title, data }));
-  }, [transactions]);
+  const sections = useMemo(() => groupTransactionsByDay(transactions), [transactions]);
 
   const handleTransactionPress = (tx: Transaction) => {
     if (accountId) {
@@ -69,7 +54,7 @@ export default function TransactionsPage() {
         </div>
 
         {/* Scrollable list */}
-        <div className="flex-1 overflow-y-auto pt-3 pb-24 flex flex-col gap-4">
+        <ScrollArea className="pt-3 pb-24 flex flex-col gap-4">
           {isLoading && (
             <div className="flex items-center justify-center pt-24">
               <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
@@ -129,7 +114,7 @@ export default function TransactionsPage() {
               )}
             </button>
           )}
-        </div>
+        </ScrollArea>
 
         {/* FAB */}
         <button

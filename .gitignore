@@ -7,8 +7,14 @@ node_modules
 dist
 dist-ssr
 
+# Test coverage reports
+coverage
+
 # Environment Variables (CRITICAL)
 .env
 
 # Local AI / Editor Settings
 .claude/
+
+# tsc output (no outDir set — tsc emits .js next to source if run directly)
+src/**/*.js

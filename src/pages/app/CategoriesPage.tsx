@@ -3,9 +3,10 @@ import { resolveLucideIcon } from '@/components/accounts/lucideIcon';
 import PickerGrid from '@/components/shared/PickerGrid';
 import SelectorTab from '@/components/shared/SelectorTab';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { useGetCategories } from '@/hooks/categories/useGetCategories';
 import { Category } from '@/interfaces/Category';
-import { TransactionType } from '@/interfaces/components/ITransaction';
+import { TransactionType } from '@/interfaces/Transaction';
 import { Text } from '@/shared/Text';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +32,7 @@ export default function CategoriesPage() {
     <ScreenWrapper>
       <HeaderCard title="Categories" buttonText="New" onButtonPress={handleAdd} />
 
-      <div className="flex-1 overflow-y-auto pb-8 pt-4 flex flex-col gap-6">
+      <ScrollArea className="pb-8 pt-4 flex flex-col gap-6">
         <SelectorTab onTypeChange={(newType) => setType(newType)} />
 
         <div className="flex flex-row items-center mb-4 gap-2">
@@ -76,7 +77,7 @@ export default function CategoriesPage() {
             })}
           </PickerGrid>
         )}
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

@@ -1,5 +1,4 @@
 import { getDeviceId, getDeviceName } from '@/services/device.service';
-import { useAuthStore } from '@/stores/authStore';
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -15,14 +14,20 @@ if (!BASE_URL) {
   );
 }
 
-// ─── 2. Opt-out flag for device headers per request ───────────────────────────
+// ─── 2. Auth-failure callback — wired up in main.tsx to avoid circular dep ────
+let onAuthFailure: (() => void) | null = null;
+export const setAuthFailureHandler = (handler: () => void): void => {
+  onAuthFailure = handler;
+};
+
+// ─── 3. Opt-out flag for device headers per request ───────────────────────────
 declare module 'axios' {
   interface AxiosRequestConfig {
     skipDeviceHeaders?: boolean;
   }
 }
 
-// ─── 3. Memory cache — populated once at boot, interceptor stays synchronous ──
+// ─── 4. Memory cache — populated once at boot, interceptor stays synchronous ──
 let cachedDeviceId: string | null = null;
 let cachedDeviceName: string | null = null;
 
@@ -37,7 +42,7 @@ export const initializeDeviceMetadata = async (): Promise<void> => {
   }
 };
 
-// ─── 4. Factory ───────────────────────────────────────────────────────────────
+// ─── 5. Factory ───────────────────────────────────────────────────────────────
 export interface ApiClientDeps {
   baseURL: string;
   getToken: () => string | null;
@@ -99,11 +104,14 @@ export function createApiClient(deps: ApiClientDeps): AxiosInstance {
             // No body needed — browser sends the refresh_token cookie automatically
             await client.post('/auth/refresh', {}, { skipDeviceHeaders: false });
             return client(originalRequest);
-          } catch {
-            useAuthStore.getState().logout();
+          } catch (refreshError) {
+            const statusCode = (refreshError as Error & { statusCode?: number }).statusCode;
+            if (statusCode !== 401) {
+              onAuthFailure?.();
+            }
           }
         } else {
-          useAuthStore.getState().logout();
+          onAuthFailure?.();
         }
       }
 
@@ -117,10 +125,11 @@ export function createApiClient(deps: ApiClientDeps): AxiosInstance {
   return client;
 }
 
-// ─── 5. Production singleton ──────────────────────────────────────────────────
+// ─── 6. Production singleton ──────────────────────────────────────────────────
+// Web uses httpOnly cookies for auth — no token in JS memory.
 export default createApiClient({
   baseURL: BASE_URL,
-  getToken: () => useAuthStore.getState().token,
+  getToken: () => null,
   getCachedDeviceId: () => cachedDeviceId,
   getCachedDeviceName: () => cachedDeviceName,
 });

@@ -1,5 +1,5 @@
 import { Text } from '@/shared/Text';
-import { TransactionType } from '@/interfaces/components/ITransaction';
+import { TransactionType } from '@/interfaces/Transaction';
 
 interface SelectorProps {
   label: string;

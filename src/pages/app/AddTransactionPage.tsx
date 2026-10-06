@@ -5,6 +5,7 @@ import FormField from '@/components/shared/FormField';
 import PillGroup, { PillOption } from '@/components/shared/PillGroup';
 import SelectField, { SelectOption } from '@/components/shared/SelectField';
 import ScreenWrapper from '@/components/shared/ScreenWrapper';
+import ScrollArea from '@/components/shared/ScrollArea';
 import { useGetAccounts } from '@/hooks/accounts/useGetAccounts';
 import { useGetCategories } from '@/hooks/categories/useGetCategories';
 import { useCreateTransaction } from '@/hooks/transactions/useCreateTransaction';
@@ -172,7 +173,7 @@ export default function AddTransactionPage() {
         title={isEditMode ? 'Edit Transaction' : 'New Transaction'}
         onBack={handleCancel}
       />
-      <div className="flex-1 overflow-y-auto pb-20 pt-2 flex flex-col gap-6">
+      <ScrollArea className="pb-20 pt-2 flex flex-col gap-6">
         <Controller
           control={control}
           name="type"
@@ -279,7 +280,7 @@ export default function AddTransactionPage() {
           saveLabel={isEditMode ? 'Save Changes' : 'Save Transaction'}
           isSaving={isEditMode ? updateTransaction.isPending : createTransaction.isPending}
         />
-      </div>
+      </ScrollArea>
     </ScreenWrapper>
   );
 }

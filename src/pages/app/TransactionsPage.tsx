@@ -7,7 +7,7 @@ import { useGetTransactions } from '@/hooks/transactions/useGetTransactions';
 import { useIconColors } from '@/hooks/useIconColors';
 import { Account } from '@/interfaces/Account';
 import { Transaction, TransactionFilters } from '@/interfaces/Transaction';
-import { dayLabel } from '@/shared/dateRange';
+import { groupTransactionsByDay } from '@/shared/transactions';
 import { Text } from '@/shared/Text';
 import { List, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -32,15 +32,7 @@ export default function TransactionsPage() {
 
   const transactions = useMemo<Transaction[]>(() => data?.pages.flatMap((p) => p.data) ?? [], [data]);
 
-  const sections = useMemo(() => {
-    const grouped = transactions.reduce<Record<string, Transaction[]>>((acc, tx) => {
-      const label = dayLabel(new Date(tx.createdAt));
-      if (!acc[label]) acc[label] = [];
-      acc[label].push(tx);
-      return acc;
-    }, {});
-    return Object.entries(grouped).map(([title, data]) => ({ title, data }));
-  }, [transactions]);
+  const sections = useMemo(() => groupTransactionsByDay(transactions), [transactions]);
 
   const handleTransactionPress = (tx: Transaction) => {
     if (accountId) {

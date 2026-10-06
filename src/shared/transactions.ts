@@ -1,4 +1,5 @@
 import { Transaction } from '@/interfaces/Transaction';
+import { dayLabel } from '@/shared/dateRange';
 
 export interface CategorySpend {
   categoryId: number;
@@ -42,4 +43,16 @@ export const buildTopCategories = (
       .sort((a, b) => b.amount - a.amount)
       .slice(0, limit),
   };
+};
+
+export const groupTransactionsByDay = (
+  transactions: Transaction[],
+): { title: string; data: Transaction[] }[] => {
+  const grouped = transactions.reduce<Record<string, Transaction[]>>((acc, tx) => {
+    const label = dayLabel(new Date(tx.createdAt));
+    if (!acc[label]) acc[label] = [];
+    acc[label].push(tx);
+    return acc;
+  }, {});
+  return Object.entries(grouped).map(([title, data]) => ({ title, data }));
 };

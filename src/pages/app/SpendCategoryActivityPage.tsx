@@ -6,7 +6,8 @@ import { resolveLucideIcon } from '@/components/accounts/lucideIcon';
 import { useGetCategories } from '@/hooks/categories/useGetCategories';
 import { useGetTransactionsTimeframe } from '@/hooks/transactions/useGetTransactionsTimeframe';
 import { Transaction } from '@/interfaces/Transaction';
-import { dayLabel, monthBoundsISO, monthLabel, parseMonthParam } from '@/shared/dateRange';
+import { monthBoundsISO, monthLabel, parseMonthParam } from '@/shared/dateRange';
+import { groupTransactionsByDay } from '@/shared/transactions';
 import { Text } from '@/shared/Text';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -44,13 +45,7 @@ export default function SpendCategoryActivityPage() {
 
   const sections = useMemo(() => {
     const sorted = transactions.slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    const grouped = sorted.reduce<Record<string, Transaction[]>>((acc, tx) => {
-      const label = dayLabel(new Date(tx.createdAt));
-      if (!acc[label]) acc[label] = [];
-      acc[label].push(tx);
-      return acc;
-    }, {});
-    return Object.entries(grouped).map(([title, data]) => ({ title, data }));
+    return groupTransactionsByDay(sorted);
   }, [transactions]);
 
   const Icon = resolveLucideIcon(category?.icon ?? 'tag');

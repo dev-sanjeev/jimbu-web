@@ -16,7 +16,7 @@ import { BrandIcon } from "@/shared/BrandIcon";
 import { useAuthStore } from "@/stores/authStore";
 import { useIconColors } from "@/hooks/useIconColors";
 
-const APP_VERSION = "1.0.0";
+import { version as APP_VERSION } from '../../../package.json';
 
 interface SidebarProps {
   isWide: boolean;

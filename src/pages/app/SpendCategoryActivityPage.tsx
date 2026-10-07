@@ -5,7 +5,6 @@ import ScrollArea from '@/components/shared/ScrollArea';
 import { resolveLucideIcon } from '@/components/accounts/lucideIcon';
 import { useGetCategories } from '@/hooks/categories/useGetCategories';
 import { useGetTransactionsTimeframe } from '@/hooks/transactions/useGetTransactionsTimeframe';
-import { Transaction } from '@/interfaces/Transaction';
 import { monthBoundsISO, monthLabel, parseMonthParam } from '@/shared/dateRange';
 import { groupTransactionsByDay } from '@/shared/transactions';
 import { Text } from '@/shared/Text';
